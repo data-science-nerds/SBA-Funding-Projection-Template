@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Sample Dashboard</h1>
+    <form id="dataForm">
+        <label for="text">Text:</label><br>
+        <textarea id="text" name="text" rows="4" cols="50"></textarea><br><br>
+        <label for="number">Number:</label><br>
+        <input type="number" id="number" name="number"><br><br>
+        <input type="submit" value="Process Data">
+    </form>
+    <h2>Results</h2>
+    <div id="results">
+        <strong>Original Text:</strong> <span id="originalText"></span><br>
+        <strong>Translated Sentences:</strong> <ul id="translatedSentences"></ul><br>
+        <strong>Original Number:</strong> <span id="originalNumber"></span><br>
+        <strong>Processed Number:</strong> <span id="processedNumber"></span><br>
+    </div>
+    <script>
+        $("#dataForm").submit(function(event) {
+            event.preventDefault();
+            const formData = {
+                text: $("#text").val(),
+                number: parseFloat($("#number").val())
+            };
+            $.post("/process_data", formData, function(data) {
+                $("#originalText").text(data.original_text);
+                $("#translatedSentences").empty();
+                data.translated_sentences.forEach(sentence => {
+                    $("#translatedSentences").append(`<li>${sentence}</li>`);
+                });
+                $("#originalNumber").text(data.original_number);
+                $("#processedNumber").text(data.processed_number);
+            });
+        });
+    </script>
+</body>
+</html>
